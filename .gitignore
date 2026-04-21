@@ -3,6 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
+# ===== Allure report =====
+!target/allure-results/
+!target/allure-results/**
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
