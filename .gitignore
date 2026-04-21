@@ -1,11 +1,11 @@
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
-# ===== Allure report =====
 !target/allure-results/
 !target/allure-results/**
+
+.allure/
+.idea/
+*.iml
+out/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -13,7 +13,6 @@ target/
 .idea/compiler.xml
 .idea/libraries/
 *.iws
-*.iml
 *.ipr
 
 ### Eclipse ###
