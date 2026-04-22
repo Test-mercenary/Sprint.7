@@ -12,6 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_CONFLICT;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.hamcrest.Matchers.equalTo;
 
 public class CreateCourierTest {
@@ -42,10 +45,10 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Курьера можно создать")
     @Description("Успешное создание курьера возвращает 201 и ok: true")
-    public void courierCanBeCreated() {
+    public void courierCanBeCreatedTest() {
         courierClient.create(courier)
                 .then()
-                .statusCode(201)
+                .statusCode(SC_CREATED)
                 .body("ok", equalTo(true));
 
         courierId = getCreatedCourierId();
@@ -54,35 +57,37 @@ public class CreateCourierTest {
     @Test
     @DisplayName("Нельзя создать двух одинаковых курьеров")
     @Description("При попытке создать курьера с уже существующим логином возвращается 409 и сообщение об ошибке")
-    public void cannotCreateTwoIdenticalCouriers() {
+    public void cannotCreateTwoIdenticalCouriersTest() {
         courierClient.create(courier);
         courierId = getCreatedCourierId();
 
         courierClient.create(courier)
                 .then()
-                .statusCode(409)
+                .statusCode(SC_CONFLICT)
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
     }
 
     @Test
     @DisplayName("Нельзя создать курьера без логина")
     @Description("Если не передать логин, возвращается 400 и сообщение об ошибке")
-    public void cannotCreateCourierWithoutLogin() {
+    public void cannotCreateCourierWithoutLoginTest() {
         Courier noLogin = new Courier(null, courier.getPassword(), courier.getFirstName());
+
         courierClient.create(noLogin)
                 .then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 
     @Test
     @DisplayName("Нельзя создать курьера без пароля")
     @Description("Если не передать пароль, возвращается 400 и сообщение об ошибке")
-    public void cannotCreateCourierWithoutPassword() {
+    public void cannotCreateCourierWithoutPasswordTest() {
         Courier noPassword = new Courier(courier.getLogin(), null, courier.getFirstName());
+
         courierClient.create(noPassword)
                 .then()
-                .statusCode(400)
+                .statusCode(SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
     }
 }
