@@ -4,6 +4,8 @@ import client.OrderClient;
 import client.OrderGenerator;
 import io.qameta.allure.junit4.DisplayName;
 import model.Order;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -12,14 +14,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.hamcrest.Matchers.notNullValue;
-
 @RunWith(Parameterized.class)
 public class CreateOrderTest {
 
     private final OrderClient orderClient = new OrderClient();
     private final List<String> colors;
     private final String testName;
+
+    private Integer track;
 
     public CreateOrderTest(List<String> colors, String testName) {
         this.colors = colors;
@@ -41,9 +43,19 @@ public class CreateOrderTest {
     public void createOrderTest() {
         Order order = OrderGenerator.getRandomOrder(colors);
 
-        orderClient.create(order)
+        track = orderClient.create(order)
                 .then()
                 .statusCode(201)
-                .body("track", notNullValue());
+                .extract()
+                .path("track");
+
+        Assert.assertNotNull(track);
+    }
+
+    @After
+    public void tearDown() {
+        if (track != null) {
+            orderClient.cancel(track);
+        }
     }
 }

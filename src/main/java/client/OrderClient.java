@@ -24,4 +24,11 @@ public class OrderClient extends BaseClient {
                 .spec(getBaseSpec())
                 .get(ORDERS_PATH);
     }
+
+    @Step("Отмена заказа по track: {track}")
+    public Response cancel(int track) {
+        return given()
+                .spec(getBaseSpec())
+                .put(ORDERS_PATH + "/cancel?track=" + track);
+    }
 }
